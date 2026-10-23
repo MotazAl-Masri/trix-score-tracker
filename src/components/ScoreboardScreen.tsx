@@ -82,13 +82,12 @@ const EditableCell: React.FC<EditableCellProps> = ({ value, onSave }) => {
     <button
       type="button"
       onClick={openEdit}
-      className={`w-full py-2 px-0.5 rounded-lg text-sm font-semibold tabular-nums text-center transition-colors hover:bg-slate-800/60 active:scale-95 ${
-        value > 0
-          ? 'text-emerald-400'
-          : value < 0
-            ? 'text-rose-400'
-            : 'text-slate-500'
-      }`}
+      className={`w-full py-2 px-0.5 rounded-lg text-sm font-semibold tabular-nums text-center transition-colors hover:bg-slate-800/60 active:scale-95 ${value > 0
+        ? 'text-emerald-400'
+        : value < 0
+          ? 'text-rose-400'
+          : 'text-slate-500'
+        }`}
       title="Tap to edit score"
     >
       {fmtScore(value)}
@@ -259,9 +258,8 @@ export const ScoreboardScreen: React.FC = () => {
               <div key={p.id} className={`${COL} text-center px-0.5`}>
                 {mode === 'teams' && (
                   <span
-                    className={`block text-[9px] font-black uppercase mb-0.5 ${
-                      isTeamA ? 'text-emerald-400' : 'text-purple-400'
-                    }`}
+                    className={`block text-[9px] font-black uppercase mb-0.5 ${isTeamA ? 'text-emerald-400' : 'text-purple-400'
+                      }`}
                   >
                     {isTeamA ? 'Tm A' : 'Tm B'}
                   </span>
@@ -289,13 +287,12 @@ export const ScoreboardScreen: React.FC = () => {
             return (
               <div key={p.id} className={`${COL} text-center`}>
                 <span
-                  className={`text-sm font-black tabular-nums ${
-                    total > 0
-                      ? 'text-emerald-400'
-                      : total < 0
-                        ? 'text-rose-400'
-                        : 'text-slate-600'
-                  }`}
+                  className={`text-sm font-black tabular-nums ${total > 0
+                    ? 'text-emerald-400'
+                    : total < 0
+                      ? 'text-rose-400'
+                      : 'text-slate-600'
+                    }`}
                 >
                   {fmtScore(total)}
                 </span>
@@ -340,9 +337,8 @@ export const ScoreboardScreen: React.FC = () => {
                   <div className={`${COL_SIDE} flex flex-col items-center justify-center`}>
                     <span className="text-[10px] font-bold text-slate-600 leading-none">R</span>
                     <span
-                      className={`text-sm font-black leading-none ${
-                        isBeingEdited ? 'text-emerald-400' : 'text-slate-400'
-                      }`}
+                      className={`text-sm font-black leading-none ${isBeingEdited ? 'text-emerald-400' : 'text-slate-400'
+                        }`}
                     >
                       {roundIdx + 1}
                     </span>
@@ -366,11 +362,10 @@ export const ScoreboardScreen: React.FC = () => {
                       onClick={() =>
                         isBeingEdited ? handleCancelEdit() : handleEditRound(round.id)
                       }
-                      className={`p-1 rounded-md transition-colors active:scale-90 ${
-                        isBeingEdited
-                          ? 'text-emerald-400 bg-emerald-900/40'
-                          : 'text-slate-600 hover:text-sky-400 hover:bg-sky-950/30'
-                      }`}
+                      className={`p-1 rounded-md transition-colors active:scale-90 ${isBeingEdited
+                        ? 'text-emerald-400 bg-emerald-900/40'
+                        : 'text-slate-600 hover:text-sky-400 hover:bg-sky-950/30'
+                        }`}
                       title={isBeingEdited ? 'Cancel edit' : 'Edit this round'}
                     >
                       <Pencil className="w-3.5 h-3.5" />
@@ -395,11 +390,10 @@ export const ScoreboardScreen: React.FC = () => {
         {/* ═══ Input Row: New Round / Edit Round ═══ */}
         <div
           ref={inputSectionRef}
-          className={`sticky bottom-0 z-20 border-t-2 shadow-2xl shadow-slate-950 transition-colors ${
-            isEditing
-              ? 'bg-slate-900 border-emerald-600'
-              : 'bg-slate-900 border-emerald-700/60'
-          }`}
+          className={`sticky bottom-0 z-20 border-t-2 shadow-2xl shadow-slate-950 transition-colors ${isEditing
+            ? 'bg-slate-900 border-emerald-600'
+            : 'bg-slate-900 border-emerald-700/60'
+            }`}
         >
           {/* Mode label */}
           <div className="flex items-center justify-between px-3 pt-2 pb-0">
@@ -447,27 +441,57 @@ export const ScoreboardScreen: React.FC = () => {
           {/* Number Inputs */}
           <div className="flex items-center gap-1 px-2 pb-1.5 pt-0.5">
             <div className={COL_SIDE} />
-            {players.map((p, idx) => (
-              <div key={p.id} className={`${COL} px-0.5`}>
-                <input
-                  ref={(el) => { inputRefs.current[p.id] = el; }}
-                  id={`score-input-${p.id}`}
-                  type="number"
-                  inputMode="decimal"
-                  pattern="-?[0-9]*"
-                  value={draft[p.id]}
-                  placeholder="0"
-                  onChange={(e) => handleDraftChange(p.id, e.target.value)}
-                  onKeyDown={(e) => handleInputKey(e, idx)}
-                  onFocus={(e) => e.target.select()}
-                  className={`w-full bg-slate-800 border rounded-xl px-1.5 py-3 text-center text-base font-bold text-slate-100 placeholder-slate-600 focus:outline-none focus:ring-1 transition-all min-h-[52px] tabular-nums ${
-                    isEditing
-                      ? 'border-emerald-700 focus:border-emerald-500 focus:ring-emerald-500'
-                      : 'border-slate-700 focus:border-emerald-500 focus:ring-emerald-500'
-                  }`}
-                />
-              </div>
-            ))}
+            {players.map((p, idx) => {
+              const val = draft[p.id] || '';
+              const isNegative = val.startsWith('-');
+
+              return (
+                <div key={p.id} className={`${COL} px-0.5 flex flex-col gap-1.5`}>
+                  {/* الزر السحري للسالب والموجب */}
+                  <button
+                    type="button"
+                    tabIndex={-1} // كي لا يركز عليه الكيبورد أثناء الكتابة
+                    onClick={() => {
+                      setDraft((prev) => {
+                        const current = prev[p.id] || '';
+                        if (current === '') return { ...prev, [p.id]: '-' };
+                        if (current.startsWith('-')) return { ...prev, [p.id]: current.slice(1) };
+                        return { ...prev, [p.id]: '-' + current };
+                      });
+                    }}
+                    className={`w-full py-1.5 rounded-lg text-[13px] font-black tracking-widest transition-colors active:scale-95 border ${isNegative
+                      ? 'bg-rose-950/50 text-rose-400 border-rose-800/50'
+                      : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'
+                      }`}
+                  >
+                    +/-
+                  </button>
+
+                  {/* مربع الإدخال */}
+                  <input
+                    ref={(el) => { inputRefs.current[p.id] = el; }}
+                    id={`score-input-${p.id}`}
+                    type="number"
+                    inputMode="numeric" // تم التعديل لإجبار الموبايل على لوحة الأرقام الكبيرة
+                    pattern="[0-9]*" // تم التعديل لمنع الكيبورد العادي
+                    value={val}
+                    placeholder="0"
+                    onChange={(e) => {
+                      // تنظيف الإدخال للسماح فقط بالأرقام وعلامة السالب
+                      const newVal = e.target.value.replace(/[^0-9-]/g, '');
+                      handleDraftChange(p.id, newVal);
+                    }}
+                    onKeyDown={(e) => handleInputKey(e, idx)}
+                    onFocus={(e) => e.target.select()}
+                    className={`w-full bg-slate-900 border rounded-xl px-1.5 py-3 text-center text-lg font-black placeholder-slate-600 focus:outline-none focus:ring-1 transition-all min-h-[52px] tabular-nums ${isNegative ? 'text-rose-400' : 'text-slate-100'
+                      } ${isEditing
+                        ? 'border-emerald-700 focus:border-emerald-500 focus:ring-emerald-500'
+                        : 'border-slate-700 focus:border-emerald-500 focus:ring-emerald-500'
+                      }`}
+                  />
+                </div>
+              );
+            })}
             <div className={COL_SIDE} />
           </div>
 
@@ -477,11 +501,10 @@ export const ScoreboardScreen: React.FC = () => {
               type="button"
               onClick={handleSaveRound}
               id="save-round-btn"
-              className={`w-full py-3.5 rounded-2xl font-black text-base tracking-wide uppercase shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 min-h-[52px] ${
-                isEditing
-                  ? 'bg-gradient-to-r from-emerald-700 to-teal-700 hover:from-emerald-600 hover:to-teal-600 active:from-emerald-800 text-white shadow-emerald-900/30'
-                  : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-teal-700 text-white shadow-emerald-900/40'
-              }`}
+              className={`w-full py-3.5 rounded-2xl font-black text-base tracking-wide uppercase shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 min-h-[52px] ${isEditing
+                ? 'bg-gradient-to-r from-emerald-700 to-teal-700 hover:from-emerald-600 hover:to-teal-600 active:from-emerald-800 text-white shadow-emerald-900/30'
+                : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-teal-700 text-white shadow-emerald-900/40'
+                }`}
             >
               {isEditing ? (
                 <>
